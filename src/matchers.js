@@ -9,14 +9,14 @@ const common = require('./common'); // eslint-disable-line no-unused-vars
  * @returns {(run: common.Result) => Promise<void>}
  */
 const createSettlementSleep = () => {
-    /** @type {Record<string, boolean>} */
+    /** @type {Record<string, Promise<void>>} */
     const memoized = {};
 
-    return async ({ runId }) => {
-        if (!memoized[runId]) {
-            memoized[runId] = true;
-            await Apify.utils.sleep(+(process?.env?.DATASET_SLEEP_MS ?? 18000));
+    return ({ runId }) => {
+        if (memoized[runId] === undefined) {
+            memoized[runId] = Apify.utils.sleep(10000);
         }
+        return memoized[runId];
     };
 };
 
